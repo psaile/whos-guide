@@ -1,0 +1,45 @@
+name: WHOS Guide
+
+on:
+  push:
+    branches:
+    - main
+
+env:
+  FILE_BASENAME: whos-guide-DRAFT
+
+jobs:
+  build-whos-guide:
+    name: Generate documentation
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install dependencies
+        run: |
+          sudo apt-get update -y \
+          && sudo apt-get install -y pandoc \
+          && sudo gem install asciidoctor asciidoctor-pdf
+      - name: checkout repository
+        uses: actions/checkout@master
+      - name: build documentation
+        run: |
+          mkdir -p /tmp/whos-guide/guide/images \
+          && cd guide \
+          && asciidoctor --trace -a stylesheet=css/wmo-asciidoc.css -o /tmp/whos-guide/guide/${FILE_BASENAME}.html index.adoc \
+          && asciidoctor --trace --backend docbook --out-file - index.adoc | pandoc --from docbook --to docx --output /tmp/whos-guide/guide/${FILE_BASENAME}.docx \
+          && asciidoctor --trace -r asciidoctor-pdf --trace -b pdf -o /tmp/whos-guide/guide/${FILE_BASENAME}.pdf index.adoc \
+          && cp images/*.png /tmp/whos-guide/guide/images \
+          && cd ..
+      - name: checkout gh-pages branch
+        uses: actions/checkout@master
+        with:
+          ref: gh-pages
+      - name: update gh-pages branch and publish
+        run: | 
+          git checkout gh-pages
+          git config --global user.email "3662232+psaile@users.noreply.github.com"
+          git config --global user.name "psaile"
+          rm -rf guide
+          mv -f /tmp/whos-guide/* .
+          git add .
+          git commit -am "update WHOS Guide build"
+          git push

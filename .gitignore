@@ -1,0 +1,5 @@
+.asciidoctor/
+guide/*.docx
+guide/*.html
+guide/*.pdf
+.vscode/settings.json

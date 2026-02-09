@@ -22,11 +22,11 @@ npm install asciidoctor asciidoctor-pdf asciidoc-link-check
 
 ```bash
 # create HTML (single page)
-asciidoctor --trace -o wis2-guide.html index.adoc
+asciidoctor --trace -o whos-guide.html index.adoc
 # create PDF
-asciidoctor --trace -r asciidoctor-pdf --trace -b pdf -o wis2-guide.pdf index.adoc
+asciidoctor --trace -r asciidoctor-pdf --trace -b pdf -o whos-guide.pdf index.adoc
 # create Word document
-asciidoctor --trace --backend docbook --out-file - index.adoc | pandoc --from docbook --to docx --output wis2-guide.docx
+asciidoctor --trace --backend docbook --out-file - index.adoc | pandoc --from docbook --to docx --output whos-guide.docx
 # check links
 find . -name "???.adoc" -exec asciidoc-link-check -p -c asciidoc-link-check-config.json {} \;
 ```
